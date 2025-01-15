@@ -1,37 +1,58 @@
 import 'package:flutter/material.dart';
-import 'home.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'home_page.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Supabase.initialize(
+    url: 'https://ptjjwsidxydynvmzyppw.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0amp3c2lkeHlkeW52bXp5cHB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYzODg2NzEsImV4cCI6MjA1MTk2NDY3MX0.FoE6iTOLwUaZm7veXpX1aFMT_lG2_lkAdEreEXg-f3s',
+  );
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: LoginPage(),
     );
   }
 }
 
-class HomePage extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _LoginPageState extends State<LoginPage> {
   bool _isPasswordVisible = false;
   bool _isRememberMeChecked = false;
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  // Method to navigate to the WelcomePage
-  void _navigateToWelcomePage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => WelcomePage()),
-    );
+  // Fungsi untuk menangani tombol login
+  void _handleLogin() {
+    String email = emailController.text;
+    String password = passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please fill in both email and password.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } else {
+      // Navigasi ke halaman baru
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    }
   }
 
   @override
@@ -205,9 +226,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 SizedBox(height: 30),
                 GestureDetector(
-                  onTap: () {
-                    _navigateToWelcomePage(context); // Navigate to Welcome page
-                  },
+                  onTap: _handleLogin,
                   child: Container(
                     height: 50,
                     decoration: BoxDecoration(
@@ -234,28 +253,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class WelcomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text('Welcome Page'),
-      ),
-      body: Center(
-        child: Text(
-          'Welcome!',
-          style: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-            color: Colors.blue,
-          ),
-        ),
       ),
     );
   }
